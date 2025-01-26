@@ -1,1 +1,1 @@
-Very very basic console window, whis runs on frames
+Very very basic console window, still has no input feature 🤷‍♂️
