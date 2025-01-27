@@ -52,7 +52,7 @@ max: $(MAINFILE) $(OTHERFILES)
 pmax: $(MAINFILE) $(OTHERFILES)
 	$(CC) $(MAINFILE) $(OTHERFILES) -o $(OUTPUT) $(LANGUAGESTD) $(OTHERFLAGS) -Os -Ofast -Oz -s -DNDEBUG -Wall -Wextra -pedantic
 
-# Clean target (works for Linux and Windows)
+# Clean target
 clean:
 	rm $(OUTPUT)
 clear:
