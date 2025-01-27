@@ -1,5 +1,5 @@
-#include "utils.h"
-#include "conSimple.h"
+#include "incl/utils.h"
+#include "incl/conSimple.h"
 #include <vector>
 
 // innitial setup
