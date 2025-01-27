@@ -2,10 +2,10 @@
 CC = g++
 
 # Main source file:
-MAINFILE = ./example.cpp
+MAINFILE = ./example1.cpp
 
 # output executable:
-OUTPUT = out.exe
+OUTPUT = out
 
 # Other Files to compile Too:
 OTHERFILES =

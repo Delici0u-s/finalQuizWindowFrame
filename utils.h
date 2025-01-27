@@ -1,103 +1,49 @@
-#ifndef UTILS_H
-#define UTILS_H
+#pragma once
+#include "conSimple.h"
+#include <chrono>
+#include <functional>
+#include <thread>
+#include "Timer.h"
 
-#include <iostream>
-namespace cte // console text extras
+// struct to handle window size etc
+struct Gwindow
 {
-enum class Colors
-{
-  Black = 30,
-  Red,
-  Green,
-  Yellow,
-  Blue,
-  Magenta,
-  Cyan,
-  White,
-  BrightBlack = 90,
-  BrightRed,
-  BrightGreen,
-  BrightYellow,
-  BrightBlue,
-  BrightMagenta,
-  BrightCyan,
-  BrightWhite,
+  static constexpr int width{40};
+  static constexpr int height{10};
+  static constexpr int fps = 25;
+  static constexpr std::chrono::milliseconds frameTime{1000 / fps};
+  std::chrono::milliseconds DeltaT{1000/fps};
+  constexpr double getDelta() {return DeltaT.count() / 100.0;}
 };
 
-enum class BgColors
-{
-  Black = 40,
-  Red,
-  Green,
-  Yellow,
-  Blue,
-  Magenta,
-  Cyan,
-  White,
-  BrightBlack = 100,
-  BrightRed,
-  BrightGreen,
-  BrightYellow,
-  BrightBlue,
-  BrightMagenta,
-  BrightCyan,
-  BrightWhite,
-};
+// Global Window, default statistics
+static Gwindow W{};
 
-// Hidden namespace
-namespace
+// Function to print text everytime. By adding args you can like print special based on enemy pos
+constexpr void Run(const auto F)
 {
-// Reset Colors
-constexpr char Res[]{"\033[0m"};
-// Clear the entire screen
-constexpr char Clear[]{"\033[2J"};
-// Reset cursor position to the top-left corner of the screen
-constexpr char ResetPos[]{"\033[H"};
-// Clear Current Line
-constexpr char ClearL[]{"\033[2K"};
-} // namespace
+  Timer clock{};
+  auto targetFrameTime = std::chrono::steady_clock::now();
 
-constexpr void colorText(const auto &Text, const Colors C = Colors::White, const BgColors Bg = BgColors::Black)
-{
-  std::cout << "\033[" << static_cast<int>(C) << 'm' << "\033[" << static_cast<int>(Bg) << 'm' << Text << Res;
-}
-constexpr void Reset()
-{
-  std::cout << Res;
+  for (;;)
+  {
+    // go to top left and print "screen" accordingly
+    F();
+    std::cout << std::flush;
+
+    // calculate time to wait till next frame is "rendered"
+    targetFrameTime += W.frameTime;
+    if (std::chrono::steady_clock::now() < targetFrameTime) { std::this_thread::sleep_until(targetFrameTime); }
+
+    // set deltatime, may be needed for something like movement
+    W.DeltaT = clock.elapsed<std::chrono::milliseconds>();
+    clock.reset();
+  }
 }
 
-namespace special
+constexpr void initial()
 {
-// clear current line of cursor
-constexpr void ClearLine()
-{
-  std::cout << ClearL;
-};
-constexpr void clearScreen()
-{
-  std::cout << Clear << ResetPos;
+  cte::special::clearScreen();
+  cte::cursor::Hide();
+  for (int i{0}; i < W.height; ++i) { std::cout << '\n'; }
 }
-constexpr void alert()
-{
-  std::cout << "\007";
-}
-} // namespace special
-
-namespace cursor
-{
-constexpr void ResetPosition()
-{
-  std::cout << ResetPos;
-}
-constexpr void Hide()
-{
-  std::cout << "\033[?25l";
-}
-constexpr void Show()
-{
-  std::cout << "\033[?25h";
-}
-} // namespace cursor
-} // namespace cte
-
-#endif // UTILS_H
