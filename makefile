@@ -15,7 +15,6 @@ OTHERFLAGS =
 
 # Language standart the compiler should use:
 # (automatically the version amCode.cpp was compiled in)
-# Can be replaced by an std=c++VERSION in OTHERFLAGS as Last takes priority 
 LANGUAGESTD = --std=c++23
 
 # Default target (for development/debugging)
